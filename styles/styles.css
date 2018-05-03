@@ -1,0 +1,118 @@
+body
+{
+	color: darkgrey;
+	background-color: #333;
+	width: 1500px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+#mainHeader
+{
+	color: white;
+	background-color: mediumblue;
+	background: linear-gradient(to bottom, mediumblue 0%,#000054 100%);
+	text-align: center;
+	vertical-align: center;
+	height: 50px;
+}
+
+a
+{
+	text-decoration: none;
+}
+
+a:hover
+{
+	text-decoration: underline;
+}
+
+nav
+{
+	text-align: center;
+	background-color: grey;
+}
+
+nav a
+{
+	padding: 0 1.5em;
+}
+
+header h1
+{
+	margin: 0px;
+}
+
+a
+{
+	color: white;
+}
+
+#results
+{
+	list-style: none;
+	padding-left: 0px;
+	margin: 0px;
+}
+
+.resultbox, .infoBox
+{
+	width: 80%;
+	margin-left: auto;
+	margin-right: auto;
+	background-color: dimgrey;
+	border-radius: 10px;
+	padding: 5px;
+	margin: 5px auto 5px auto;
+	border: 1px solid black;
+	overflow:hidden;
+}
+
+.resultbox header, .infoBox header
+{
+	color: white;
+	font-weight: bold;
+	margin: -5px -5px 0 -5px;
+	padding: 5px;
+	background-color: mediumblue;
+	background: linear-gradient(to bottom, mediumblue 0%,#000054 100%);
+}
+
+.infoBox dl
+{
+	margin: 0;
+}
+
+#results a
+{
+	text-decoration: none;
+}
+
+#pages
+{
+	text-align: center;
+}
+
+#pages li
+{
+	display: inline-block;
+	text-align: center;
+}
+
+#pages li a
+{
+	padding: 2px 4px;
+	background-color: mediumblue;
+	border-radius: 5px;
+	border: 1px solid black;
+}
+
+#pages li .active
+{
+	background-color: royalblue;
+}
+
+#pages li a:hover, #results a:hover
+{
+	text-decoration: underline;
+}
