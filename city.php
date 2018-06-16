@@ -1,21 +1,23 @@
 <?php
-require_once("template.php");
-require_once("connect.php");
-require_once("linkConversionFunctions.php");
-
+include("functions/connect.php");
 $cityID = $_GET["id"];
 
-$data = $conn->query("SELECT * FROM city WHERE ID = \"$cityID\"")->fetch(PDO::FETCH_ASSOC);
+$data = $worldDB->query("SELECT * FROM city WHERE ID = \"$cityID\"")->fetch(PDO::FETCH_ASSOC);
 
-if (!isset($TPL)) {
-    $TPL = new PageTemplate();
-    $TPL->PageTitle = $data["Name"];
-	$TPL->ContentBody = __FILE__;
-    include "layout.php";
-    exit;
+if(!$data)
+{
+	http_response_code(404);
+	require("404.php");
+	exit;
 }
 
-$countryData = $conn->query("SELECT Code,Name FROM country WHERE Code = 
+$pageTitle = $data["Name"];
+require("templates/header.php");
+include("functions/linkConversionFunctions.php");
+
+require("templates/body.php");
+
+$countryData = $worldDB->query("SELECT Code,Name FROM country WHERE Code = 
 \"".$data["CountryCode"]."\"")->fetch(PDO::FETCH_ASSOC);
 
 $cityObject = array("District" => $data["District"],
@@ -23,6 +25,10 @@ $cityObject = array("District" => $data["District"],
 					"Capital" => countryToLink($countryData)
 				);
 ?>
+
+<br>
+
+<div style="text-align: center"><img src="http://via.placeholder.com/250x350" width="250" height="350" alt="<?php echo $data["Name"] ?>" /></div>
 
 <div class="infoBox">
 	<header><?php echo $data["Name"] ?></header>
@@ -35,3 +41,4 @@ $cityObject = array("District" => $data["District"],
 		</dl> 
 	</div>
 </div>
+<?php require("templates/footer.php"); ?>

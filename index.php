@@ -1,24 +1,20 @@
 <?php
-require_once("template.php");
-require_once("connect.php");
-require_once("pagination.php");
+include("functions/connect.php");
+require("functions/pagination.php");
 
 $currentPage = isset($_GET["page"]) ? max($_GET["page"],1) : 1;
 
-$total = implode($conn->query("SELECT COUNT(*) FROM country") -> fetch(PDO::FETCH_ASSOC));
+$total = implode($worldDB->query("SELECT COUNT(*) FROM country") -> fetch(PDO::FETCH_ASSOC));
 $perPage = 15;
 $maxPages = ceil($total / $perPage);
 
-if (!isset($TPL)) {
-    $TPL = new PageTemplate();
-    $TPL->PageTitle = "Main Page";
-	$TPL->ContentBody = __FILE__;
-    $TPL->ContentHead = "pageStuff.php";
-    include "layout.php";
-    exit;
-}
+$pageTitle = "Main Page";
+require("templates/header.php");
+require("functions/pageStuff.php");
+require("templates/body.php");
 
 $offset = $perPage * ($currentPage - 1);
 
 getPages("country","Code","Code");
+require("templates/footer.php");
 ?>

@@ -5,7 +5,7 @@ require_once("pagination.php");
 function listResults($table,$linkID,$descMarkup)
 {
 	global $currentPage;
-	global $conn;
+	global $worldDB;
 	global $perPage;
 	global $maxPages;
 }

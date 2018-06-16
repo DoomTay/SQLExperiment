@@ -1,4 +1,5 @@
 <?php
+require ("functions/linkConversionFunctions.php");
 
 function createPageList($currentPage,$maxPages)
 {
@@ -39,13 +40,13 @@ function createPageList($currentPage,$maxPages)
 
 function getPages($table,$IDProperty,$secondaryName)
 {
-	global $conn;
+	global $worldDB;
 	global $perPage;
 	global $offset;
 	global $currentPage;
 	global $maxPages;
 	
-	$pageQuery = $conn->query("SELECT * FROM $table ORDER By Name LIMIT $perPage OFFSET $offset");
+	$pageQuery = $worldDB->query("SELECT * FROM $table ORDER By Name LIMIT $perPage OFFSET $offset");
 	
 	if($pageQuery->rowCount() > 0)
 	{
@@ -55,7 +56,11 @@ function getPages($table,$IDProperty,$secondaryName)
 		{
 			echo "\t<li>\n".
 			"\t\t<div class=\"resultbox\">\n".
-			"\t\t\t<header><a href=\"/$table.php?id=".$row[$IDProperty]."\">".$row["Name"]."</a></header>\n".
+			"\t\t\t<header>";
+			if($table == "country") echo countryToLink($row);
+			else if($table == "city") echo cityToLink($row);
+			else echo "<a href=\"/$table.php?id=".$row[$IDProperty]."\">".$row["Name"]."</a>";
+			echo "</header>\n".
 			"\t\t\t<div>".$row[$secondaryName]."</div>\n".
 			"\t\t</div>\n".
 			"\t</li>\n";

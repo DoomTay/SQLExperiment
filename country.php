@@ -1,22 +1,24 @@
 <?php
-require_once("template.php");
-require_once("connect.php");
-require_once("linkConversionFunctions.php");
-
+include("functions/connect.php");
 $countryID = $_GET["id"];
 
-$data = $conn->query("SELECT * FROM country WHERE Code = \"$countryID\"")->fetch(PDO::FETCH_ASSOC);
+$data = $worldDB->query("SELECT * FROM country WHERE Code = \"$countryID\"")->fetch(PDO::FETCH_ASSOC);
 
-if (!isset($TPL)) {
-    $TPL = new PageTemplate();
-    $TPL->PageTitle = $data["Name"];
-	$TPL->ContentBody = __FILE__;
-    include "layout.php";
-    exit;
+if(!$data)
+{
+	http_response_code(404);
+	require("404.php");
+	exit;
 }
 
-$languages = $conn->query("SELECT * FROM countrylanguage WHERE CountryCode = \"$countryID\" ORDER BY Percentage DESC")->fetchAll(PDO::FETCH_ASSOC);
-$cities = $conn->query("SELECT ID,ID,Name FROM city WHERE CountryCode = \"$countryID\" ORDER BY Population DESC")->fetchAll(PDO::FETCH_UNIQUE|PDO::FETCH_ASSOC);
+$pageTitle = $data["Name"];
+require("templates/header.php");
+include("functions/linkConversionFunctions.php");
+
+require("templates/body.php");
+
+$languages = $worldDB->query("SELECT * FROM countrylanguage WHERE CountryCode = \"$countryID\" ORDER BY Percentage DESC")->fetchAll(PDO::FETCH_ASSOC);
+$cities = $worldDB->query("SELECT ID,ID,Name FROM city WHERE CountryCode = \"$countryID\" ORDER BY Population DESC")->fetchAll(PDO::FETCH_UNIQUE|PDO::FETCH_ASSOC);
 
 $countryObject = array("Continent" => $data["Continent"],
 						"Region" => $data["Region"],
@@ -81,6 +83,10 @@ $countryObject = array("Continent" => $data["Continent"],
 
 ?>
 
+<br>
+
+<div style="text-align: center"><img src="http://via.placeholder.com/250x350" width="250" height="350" alt="<?php echo $data["Name"] ?>" /></div>
+
 <div class="infoBox">
 	<header><?php echo $data["Name"] ?></header>
 	<div>
@@ -92,3 +98,4 @@ $countryObject = array("Continent" => $data["Continent"],
 		</dl> 
 	</div>
 </div>
+<?php require("templates/footer.php"); ?>
