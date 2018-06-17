@@ -33,7 +33,7 @@ nav
 	background-color: grey;
 }
 
-nav a
+nav > a
 {
 	padding: 0 1.5em;
 }

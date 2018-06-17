@@ -1,5 +1,4 @@
 <?php
-require_once("template.php");
 $currentURL = "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
 ?>
 <!DOCTYPE html>
