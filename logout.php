@@ -4,6 +4,6 @@ session_start();
 session_unset();
 session_destroy();
 
-header("location:/");
+header("location:".$_SERVER['HTTP_REFERER']);
 exit();
 ?>

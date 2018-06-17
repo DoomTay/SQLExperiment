@@ -33,8 +33,10 @@ nav
 	background-color: grey;
 }
 
-nav > a
+nav li
 {
+	display: inline;
+	list-style-type: none;
 	padding: 0 1.5em;
 }
 

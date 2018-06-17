@@ -72,6 +72,13 @@ if(!empty($_POST['username']) && !empty($_POST['password']))
 	}
 }
 
+if(!empty($_SESSION['loggedIn']))
+{
+	echo "<div>You are already logged in!</div>";
+	require("templates/footer.php");
+	exit;
+}
+
 function login($username,$password)
 {
 	global $accounts;
@@ -81,7 +88,7 @@ function login($username,$password)
 	if($checkLogin)
 	{         
 		$_SESSION['username'] = $username;
-		$_SESSION['loggedIn'] = 1;
+		$_SESSION['loggedIn'] = true;
 		
 		header('Location: /');
 	}
