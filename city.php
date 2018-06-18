@@ -26,8 +26,6 @@ $cityObject = array("District" => $data["District"],
 				);
 ?>
 
-<br>
-
 <div style="text-align: center"><img src="http://via.placeholder.com/250x350" width="250" height="350" alt="<?php echo $data["Name"] ?>" /></div>
 
 <div class="infoBox">

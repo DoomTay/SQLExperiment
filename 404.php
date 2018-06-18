@@ -1,4 +1,5 @@
 <?php
+$pageTitle = "404";
 require("templates/header.php");
 require("templates/body.php");
 

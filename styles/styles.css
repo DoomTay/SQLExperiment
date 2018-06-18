@@ -33,6 +33,11 @@ nav
 	background-color: grey;
 }
 
+nav ul
+{
+	margin-top: 0;
+}
+
 nav li
 {
 	display: inline;
