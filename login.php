@@ -1,6 +1,6 @@
 <?php
 $pageTitle = "Log In";
-require("templates/header.php");
+include("templates/header.php");
 require("functions/connect.php");
 ?>
 <style>
@@ -17,7 +17,7 @@ form ul li
 }
 </style>
 <?php
-require("templates/body.php");
+include("templates/body.php");
 ?>
 
 <div class="infoBox">
@@ -75,7 +75,7 @@ if(!empty($_POST['username']) && !empty($_POST['password']))
 if(!empty($_SESSION['loggedIn']))
 {
 	echo "<div>You are already logged in!</div>";
-	require("templates/footer.php");
+	include("templates/footer.php");
 	exit;
 }
 
@@ -126,4 +126,4 @@ function login($username,$password)
 </form>	
 </div>
 
-<?php require("templates/footer.php"); ?>
+<?php include("templates/footer.php"); ?>

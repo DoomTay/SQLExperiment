@@ -31,6 +31,9 @@ function pageDown()
 	return preg_replace("/page=(\d+)/","page=".($currentPage - 1),$nextPage);
 }
 
-if($currentPage > 1) echo "<link rel=\"prev\" href=\"".pageDown()."\" />";
-if($currentPage < $maxPages) echo "\n<link rel=\"next\" href=\"".pageUp()."\" />";
-?>
+if($currentPage > 1):?>
+<link rel="prev" href="<?php echo pageDown() ?>" />
+<?php endif;
+if($currentPage < $maxPages):?>
+<link rel="next" href="<?php echo pageUp() ?>" />
+<?php endif; ?>

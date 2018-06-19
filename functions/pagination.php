@@ -4,7 +4,9 @@ require ("functions/linkConversionFunctions.php");
 function createPageList($currentPage,$maxPages)
 {
 	global $currentURL;
-	echo "<ul id=\"pages\">\n";
+?>
+<ul id="pages">
+<?php
 
 	$withPage = $currentURL;
 	if(strpos($withPage, 'page=') === false)
@@ -20,22 +22,31 @@ function createPageList($currentPage,$maxPages)
 	$withPage = htmlentities($withPage);
 
 	//First page in list
-	echo "\t<li><a href=\"".str_replace("page=0","page=1",$withPage)."\"".($currentPage == 1 ? " class=\"active\"" : "").">1</a></li>\n";
-	if($currentPage > 4) echo "\t<li>...</li>\n";
-
+?>
+	<li><a href="<?php echo str_replace("page=0","page=1",$withPage) ?>"<?php echo ($currentPage == 1 ? " class=\"active\"" : "") ?>>1</a></li>
+<?php if($currentPage > 4): ?>
+	<li>...</li>
+<?php
+	endif;
 	$compressedStart = max(2,$currentPage - 2);
 
 	//Get four other pages surrounding current page
 	for($i = min($compressedStart,$maxPages - 4); $i < min($compressedStart + 5,$maxPages); $i++)
 	{
-		echo "\t<li><a href=\"".str_replace("page=0","page=".$i,$withPage)."\"".($currentPage == $i ? " class=\"active\"" : "").">".$i."</a></li>\n";
+?>
+	<li><a href="<?php echo str_replace("page=0","page=$i",$withPage) ?>"<?php echo ($currentPage == $i ? " class=\"active\"" : "") ?>><?php echo $i ?></a></li>
+<?php
 	}
-
-	if($currentPage + 2 < ($maxPages - 1)) echo "\t<li>...</li>\n";
+	
+	if($currentPage + 2 < ($maxPages - 1)): ?>
+	<li>...</li>
+<?php
+	endif;
 	//Final page
-	echo "\t<li><a href=\"".str_replace("page=0","page=".($maxPages),$withPage)."\"".($currentPage == $maxPages ? " class=\"active\"" : "").">$maxPages</a></li>\n";
-
-	echo "</ul>";
+?>
+	<li><a href="<?php echo str_replace("page=0","page=$maxPages",$withPage) ?>"<?php echo ($currentPage == $maxPages ? " class=\"active\"" : "") ?>><?php echo $maxPages ?></a></li>
+</ul>
+<?php
 }
 
 function getPages($table,$IDProperty,$secondaryName)
@@ -50,30 +61,38 @@ function getPages($table,$IDProperty,$secondaryName)
 	
 	if($pageQuery->rowCount() > 0)
 	{
-		echo "<ul id=\"results\">\n";
+?>
+<ul id="results">
+<?php
 
 		while($row = $pageQuery->fetch(PDO::FETCH_ASSOC))
 		{
-			echo "\t<li>\n".
-			"\t\t<div class=\"resultbox\">\n".
-			"\t\t\t<header>";
+?>
+	<li>
+		<div class="resultbox">
+			<header><?php
 			if($table == "country") echo countryToLink($row);
 			else if($table == "city") echo cityToLink($row);
 			else echo "<a href=\"/$table.php?id=".$row[$IDProperty]."\">".$row["Name"]."</a>";
-			echo "</header>\n".
-			"\t\t\t<div>".$row[$secondaryName]."</div>\n".
-			"\t\t</div>\n".
-			"\t</li>\n";
+			?></header>
+			<div><?php echo $row[$secondaryName] ?></div>
+		</div>
+	</li>
+<?php
 		}
-		
-		echo "</ul>";
+?>
+</ul>
+<?php
 	}
 	else
 	{
-		echo "0 results";
+?>
+0 results
+<?php
 	}
+?>
 
-	echo "\n";
+<?php
 
 	createPageList($currentPage,$maxPages);
 }

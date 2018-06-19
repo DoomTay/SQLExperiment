@@ -1,5 +1,5 @@
 <?php
-include("functions/connect.php");
+require("functions/connect.php");
 require("functions/pagination.php");
 
 $currentPage = isset($_GET["page"]) ? max($_GET["page"],1) : 1;
@@ -9,12 +9,12 @@ $perPage = 15;
 $maxPages = ceil($total / $perPage);
 
 $pageTitle = "Cities";
-require("templates/header.php");
+include("templates/header.php");
 require("functions/pageStuff.php");
-require("templates/body.php");
+include("templates/body.php");
 
 $offset = $perPage * ($currentPage - 1);
 
 getPages("city","ID","CountryCode");
-require("templates/footer.php");
+include("templates/footer.php");
 ?>

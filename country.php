@@ -1,5 +1,5 @@
 <?php
-include("functions/connect.php");
+require("functions/connect.php");
 $countryID = $_GET["id"];
 
 $data = $worldDB->query("SELECT * FROM country WHERE Code = \"$countryID\"")->fetch(PDO::FETCH_ASSOC);
@@ -7,80 +7,26 @@ $data = $worldDB->query("SELECT * FROM country WHERE Code = \"$countryID\"")->fe
 if(!$data)
 {
 	http_response_code(404);
-	require("404.php");
+	include("404.php");
 	exit;
 }
 
 $pageTitle = $data["Name"];
-require("templates/header.php");
-include("functions/linkConversionFunctions.php");
-
-require("templates/body.php");
+include("templates/header.php");
+require("functions/linkConversionFunctions.php");
+?>
+<style>
+.cities
+{
+	list-style-type: none;
+	padding: 0;
+}
+</style>
+<?php
+include("templates/body.php");
 
 $languages = $worldDB->query("SELECT * FROM countrylanguage WHERE CountryCode = \"$countryID\" ORDER BY Percentage DESC")->fetchAll(PDO::FETCH_ASSOC);
 $cities = $worldDB->query("SELECT ID,ID,Name FROM city WHERE CountryCode = \"$countryID\" ORDER BY Population DESC")->fetchAll(PDO::FETCH_UNIQUE|PDO::FETCH_ASSOC);
-
-$countryObject = array("Continent" => $data["Continent"],
-						"Region" => $data["Region"],
-						"Surface Area" => ($data["SurfaceArea"] . " sq. km"),
-						"Year of Independence" => $data["IndepYear"] ?? "N/A",
-						"Cities" => (function($cityList)
-						{
-							$finalString = "";
-							
-							if(count($cityList) > 0)
-							{
-								$finalString .= "\n";
-								
-								$linkifiedCites = array_map("cityToLink",$cityList);
-								$linkifiedCites = array_map(function($link){ return "\t\t\t\t$link"; },$linkifiedCites);
-								
-								$finalString .= implode(",\n",$linkifiedCites);
-								
-								$finalString .= "\t\t\t";
-							}
-							else $finalString = "N/A";
-							
-							return $finalString;
-						})($cities),
-						"Languages" => (function($languageList)
-						{
-							$finalString = "";
-							
-							if(count($languageList) > 0)
-							{
-								$finalString .= "\n";
-								$finalString .= "\t\t\t\t<table>\n";
-								$finalString .= "\t\t\t\t<tr>\n";
-								$finalString .= "\t\t\t\t\t<th>Language</th>\n";
-								$finalString .= "\t\t\t\t\t<th>Percentage</th>\n";
-								$finalString .= "\t\t\t\t\t<th>Official</th>\n";
-								$finalString .= "\t\t\t\t</tr>\n";
-								foreach($languageList as $lang)
-								{
-									$finalString .= "\t\t\t\t<tr>\n";
-									$finalString .= "\t\t\t\t\t<td>".$lang["Language"]."</td>\n";
-									$finalString .= "\t\t\t\t\t<td>".$lang["Percentage"]."%</td>\n";
-									$finalString .= "\t\t\t\t\t<td>".($lang["IsOfficial"] == "T" ? "Yes" : "No")."</td>\n";
-									$finalString .= "\t\t\t\t</tr>\n";
-								}
-								$finalString .= "\t\t\t\t</table>\n";
-								$finalString .= "\t\t\t";
-							}
-							else $finalString = "N/A";
-							
-							return $finalString;
-						})($languages),
-						"Population" => $data["Population"],
-						"Life Expectancy" => ($data["LifeExpectancy"] ?? "N/A"),
-						"Gross National Product" => ($data["GNP"] ?? "N/A"),
-						"Gross National Product (Old)" => ($data["GNPOld"] ?? "N/A"),
-						"Local Name" => $data["LocalName"],
-						"Form of Government" => $data["GovernmentForm"],
-						"Head of State" => ($data["HeadOfState"] ?? "N/A"),
-						"Capital" => ($data["Capital"] ? cityToLink($cities[$data["Capital"]]) : "N/A")
-						);
-
 ?>
 
 <div style="text-align: center"><img src="http://via.placeholder.com/250x350" width="250" height="350" alt="<?php echo $data["Name"] ?>" /></div>
@@ -89,11 +35,94 @@ $countryObject = array("Continent" => $data["Continent"],
 	<header><?php echo $data["Name"] ?></header>
 	<div>
 		<dl>
-<?php foreach ($countryObject as $key => $value): ?>
-			<dt><?php echo $key ?></dt>
-				<dd><?php echo $value ?></dd>
+			<dt>Country Code</dt>
+			<dd><?php echo $data["Code"] ?></dd>
+			<dt>Two-Letter Country Code</dt>
+			<dd><?php echo $data["Code2"] ?></dd>
+			<dt>Continent</dt>
+			<dd><?php echo $data["Continent"] ?></dd>
+			<dt>Region</dt>
+			<dd><?php echo $data["Region"] ?></dd>
+			<dt>Surface Area</dt>
+			<dd><?php echo $data["SurfaceArea"] ?> sq. km</dd>
+			<dt>Year of Independence</dt>
+			<dd><?php echo $data["IndepYear"] ?? "N/A" ?></dd>
+			<dt>Cities</dt>
+			<dd>
+<?php	
+	if(count($cities) > 0)
+	{		
+		$linkifiedCites = array_map("cityToLink",$cities);		
+		//echo implode(",\n",$linkifiedCites);
+?>
+				<ul class="cities">
+<?php foreach($linkifiedCites as $city): ?>
+					<li><?php echo $city ?></li>
 <?php endforeach; ?>
+				</ul>
+<?php
+	}
+	else echo "N/A";
+?>
+			</dd>
+			<dt>Languages</dt>
+			<dd>
+				<table>
+				<tr>
+					<th>Language</th>
+					<th>Percentage</th>
+					<th>Official</th>
+				</tr>
+<?php
+	$finalString = "";
+							
+	if(count($languages) > 0)
+	{
+		foreach($languages as $lang):
+?>
+				<tr>
+					<td><?php echo $lang["Language"] ?></td>
+					<td><?php echo $lang["Percentage"] ?>%</td>
+					<td><?php echo $lang["IsOfficial"] == "T" ? "Yes" : "No" ?></td>
+				</tr>
+<?php endforeach;
+	}
+	else echo "N/A";
+?>
+				<tr>
+					<td>Samoan</td>
+					<td>90.6%</td>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<td>English</td>
+					<td>3.1%</td>
+					<td>Yes</td>
+				</tr>
+				<tr>
+					<td>Tongan</td>
+					<td>3.1%</td>
+					<td>No</td>
+				</tr>
+				</table>
+			</dd>
+			<dt>Population</dt>
+			<dd><?php echo $data["Population"] ?></dd>
+			<dt>Life Expectancy</dt>
+			<dd><?php echo $data["LifeExpectancy"] ?? "N/A" ?></dd>
+			<dt>Gross National Product</dt>
+			<dd><?php echo $data["GNP"] ?? "N/A" ?></dd>
+			<dt>Gross National Product (Old)</dt>
+			<dd><?php echo $data["GNPOld"] ?? "N/A" ?></dd>
+			<dt>Local Name</dt>
+			<dd><?php echo $data["LocalName"] ?></dd>
+			<dt>Form of Government</dt>
+			<dd><?php echo $data["GovernmentForm"] ?></dd>
+			<dt>Head of State</dt>
+			<dd><?php echo $data["HeadOfState"] ?? "N/A" ?></dd>
+			<dt>Capital</dt>
+			<dd><?php echo $data["Capital"] ? cityToLink($cities[$data["Capital"]]) : "N/A" ?></dd>
 		</dl> 
 	</div>
 </div>
-<?php require("templates/footer.php"); ?>
+<?php include("templates/footer.php"); ?>
